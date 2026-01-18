@@ -1,0 +1,376 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Earn App - Telegram Mini App</title>
+    <link rel="stylesheet" href="/style.css">
+    <script src="https://telegram.org/js/telegram-web-app.js"></script>
+</head>
+<body>
+    <!-- Main App Container -->
+    <div id="app" class="app-container">
+        <!-- Loading Screen -->
+        <div id="loading-screen" class="screen active">
+            <div class="loading-spinner"></div>
+            <p>Initializing...</p>
+        </div>
+
+        <!-- Session Error Screen -->
+        <div id="error-screen" class="screen">
+            <div class="error-content">
+                <h2>⚠️ Invalid Session</h2>
+                <p>Please reopen the app from the Telegram bot.</p>
+            </div>
+        </div>
+
+        <!-- Home Page -->
+        <div id="home-page" class="screen page">
+            <div class="page-header">
+                <h1>💰 Earn App</h1>
+                <div class="balance-card">
+                    <div class="balance-label">Your Balance</div>
+                    <div class="balance-amount" id="balance-display">0</div>
+                    <div class="balance-subtitle">Total Earned: <span id="total-earned">0</span></div>
+                </div>
+            </div>
+
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-icon">🔥</div>
+                    <div class="stat-value" id="streak-display">0</div>
+                    <div class="stat-label">Day Streak</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon">📅</div>
+                    <div class="stat-value" id="today-earnings">0</div>
+                    <div class="stat-label">Today's Earnings</div>
+                </div>
+            </div>
+
+            <button id="daily-checkin-btn" class="btn btn-primary btn-large">
+                <span class="btn-icon">🎁</span>
+                <span class="btn-text">Claim Daily Reward</span>
+            </button>
+
+            <nav class="bottom-nav">
+                <button class="nav-item active" data-page="home">
+                    <span class="nav-icon">🏠</span>
+                    <span class="nav-label">Home</span>
+                </button>
+                <button class="nav-item" data-page="tasks">
+                    <span class="nav-icon">✅</span>
+                    <span class="nav-label">Tasks</span>
+                </button>
+                <button class="nav-item" data-page="earn">
+                    <span class="nav-icon">📺</span>
+                    <span class="nav-label">Earn</span>
+                </button>
+                <button class="nav-item" data-page="refer">
+                    <span class="nav-icon">👥</span>
+                    <span class="nav-label">Refer</span>
+                </button>
+                <button class="nav-item" data-page="withdraw">
+                    <span class="nav-icon">💸</span>
+                    <span class="nav-label">Withdraw</span>
+                </button>
+            </nav>
+        </div>
+
+        <!-- Tasks Page -->
+        <div id="tasks-page" class="screen page">
+            <div class="page-header">
+                <h1>✅ Complete Tasks</h1>
+                <p class="page-subtitle">Earn rewards by completing simple tasks</p>
+            </div>
+
+            <div id="tasks-list" class="tasks-list">
+                <!-- Tasks will be loaded here -->
+            </div>
+
+            <nav class="bottom-nav">
+                <button class="nav-item" data-page="home">
+                    <span class="nav-icon">🏠</span>
+                    <span class="nav-label">Home</span>
+                </button>
+                <button class="nav-item active" data-page="tasks">
+                    <span class="nav-icon">✅</span>
+                    <span class="nav-label">Tasks</span>
+                </button>
+                <button class="nav-item" data-page="earn">
+                    <span class="nav-icon">📺</span>
+                    <span class="nav-label">Earn</span>
+                </button>
+                <button class="nav-item" data-page="refer">
+                    <span class="nav-icon">👥</span>
+                    <span class="nav-label">Refer</span>
+                </button>
+                <button class="nav-item" data-page="withdraw">
+                    <span class="nav-icon">💸</span>
+                    <span class="nav-label">Withdraw</span>
+                </button>
+            </nav>
+        </div>
+
+        <!-- Earn Page -->
+        <div id="earn-page" class="screen page">
+            <div class="page-header">
+                <h1>📺 Watch & Earn</h1>
+                <p class="page-subtitle">Watch ads to earn rewards</p>
+            </div>
+
+            <div class="earn-card">
+                <div class="earn-reward">
+                    <span class="reward-label">Reward per ad:</span>
+                    <span class="reward-amount" id="ad-reward-display">0</span>
+                </div>
+                <div class="earn-limits">
+                    <div class="limit-item">
+                        <span>Hourly: <span id="hourly-count">0</span>/<span id="hourly-limit">10</span></span>
+                    </div>
+                    <div class="limit-item">
+                        <span>Daily: <span id="daily-count">0</span>/<span id="daily-limit">50</span></span>
+                    </div>
+                </div>
+                <button id="watch-ad-btn" class="btn btn-primary btn-large">
+                    <span class="btn-icon">📺</span>
+                    <span class="btn-text">Watch Ad</span>
+                </button>
+            </div>
+
+            <nav class="bottom-nav">
+                <button class="nav-item" data-page="home">
+                    <span class="nav-icon">🏠</span>
+                    <span class="nav-label">Home</span>
+                </button>
+                <button class="nav-item" data-page="tasks">
+                    <span class="nav-icon">✅</span>
+                    <span class="nav-label">Tasks</span>
+                </button>
+                <button class="nav-item active" data-page="earn">
+                    <span class="nav-icon">📺</span>
+                    <span class="nav-label">Earn</span>
+                </button>
+                <button class="nav-item" data-page="refer">
+                    <span class="nav-icon">👥</span>
+                    <span class="nav-label">Refer</span>
+                </button>
+                <button class="nav-item" data-page="withdraw">
+                    <span class="nav-icon">💸</span>
+                    <span class="nav-label">Withdraw</span>
+                </button>
+            </nav>
+        </div>
+
+        <!-- Refer Page -->
+        <div id="refer-page" class="screen page">
+            <div class="page-header">
+                <h1>👥 Invite Friends</h1>
+                <p class="page-subtitle">Earn rewards for each referral</p>
+            </div>
+
+            <div class="refer-card">
+                <div class="refer-bonus">
+                    <span class="bonus-label">Referral Bonus:</span>
+                    <span class="bonus-amount" id="referral-bonus-display">0</span>
+                </div>
+                <div class="refer-stats">
+                    <div class="stat-item">
+                        <span class="stat-number" id="referral-count">0</span>
+                        <span class="stat-text">Friends Invited</span>
+                    </div>
+                </div>
+                <div class="refer-link-container">
+                    <input type="text" id="referral-link" class="input-field" readonly>
+                    <button id="copy-link-btn" class="btn btn-secondary">Copy Link</button>
+                </div>
+                <button id="share-link-btn" class="btn btn-primary btn-large">
+                    <span class="btn-icon">📤</span>
+                    <span class="btn-text">Share Link</span>
+                </button>
+            </div>
+
+            <div class="referrals-list">
+                <h3>Your Referrals</h3>
+                <div id="referrals-container">
+                    <!-- Referrals will be loaded here -->
+                </div>
+            </div>
+
+            <nav class="bottom-nav">
+                <button class="nav-item" data-page="home">
+                    <span class="nav-icon">🏠</span>
+                    <span class="nav-label">Home</span>
+                </button>
+                <button class="nav-item" data-page="tasks">
+                    <span class="nav-icon">✅</span>
+                    <span class="nav-label">Tasks</span>
+                </button>
+                <button class="nav-item" data-page="earn">
+                    <span class="nav-icon">📺</span>
+                    <span class="nav-label">Earn</span>
+                </button>
+                <button class="nav-item active" data-page="refer">
+                    <span class="nav-icon">👥</span>
+                    <span class="nav-label">Refer</span>
+                </button>
+                <button class="nav-item" data-page="withdraw">
+                    <span class="nav-icon">💸</span>
+                    <span class="nav-label">Withdraw</span>
+                </button>
+            </nav>
+        </div>
+
+        <!-- Withdraw Page -->
+        <div id="withdraw-page" class="screen page">
+            <div class="page-header">
+                <h1>💸 Withdraw Funds</h1>
+                <p class="page-subtitle">Request a withdrawal to your wallet</p>
+            </div>
+
+            <div class="withdraw-card">
+                <div class="withdraw-balance">
+                    <span class="balance-label">Available Balance:</span>
+                    <span class="balance-amount" id="withdraw-balance">0</span>
+                </div>
+                <div class="withdraw-min">
+                    Minimum withdrawal: <span id="min-withdraw-display">0</span>
+                </div>
+                <form id="withdraw-form">
+                    <div class="form-group">
+                        <label for="wallet-address">Wallet Address</label>
+                        <input type="text" id="wallet-address" class="input-field" placeholder="Enter your wallet address" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="withdraw-amount">Amount</label>
+                        <input type="number" id="withdraw-amount" class="input-field" placeholder="Enter amount" min="0" step="0.01" required>
+                    </div>
+                    <button type="submit" class="btn btn-primary btn-large">
+                        <span class="btn-icon">💸</span>
+                        <span class="btn-text">Request Withdrawal</span>
+                    </button>
+                </form>
+            </div>
+
+            <div class="withdraw-history">
+                <h3>Withdrawal History</h3>
+                <div id="withdraw-history-container">
+                    <!-- History will be loaded here -->
+                </div>
+            </div>
+
+            <nav class="bottom-nav">
+                <button class="nav-item" data-page="home">
+                    <span class="nav-icon">🏠</span>
+                    <span class="nav-label">Home</span>
+                </button>
+                <button class="nav-item" data-page="tasks">
+                    <span class="nav-icon">✅</span>
+                    <span class="nav-label">Tasks</span>
+                </button>
+                <button class="nav-item" data-page="earn">
+                    <span class="nav-icon">📺</span>
+                    <span class="nav-label">Earn</span>
+                </button>
+                <button class="nav-item" data-page="refer">
+                    <span class="nav-icon">👥</span>
+                    <span class="nav-label">Refer</span>
+                </button>
+                <button class="nav-item active" data-page="withdraw">
+                    <span class="nav-icon">💸</span>
+                    <span class="nav-label">Withdraw</span>
+                </button>
+            </nav>
+        </div>
+
+        <!-- Admin Dashboard -->
+        <div id="admin-page" class="screen page">
+            <div class="page-header">
+                <h1>⚙️ Admin Dashboard</h1>
+                <p class="page-subtitle">Manage app configuration and withdrawals</p>
+            </div>
+
+            <div class="admin-tabs">
+                <button class="tab-btn active" data-tab="config">Config</button>
+                <button class="tab-btn" data-tab="tasks-admin">Tasks</button>
+                <button class="tab-btn" data-tab="withdrawals">Withdrawals</button>
+            </div>
+
+            <!-- Config Tab -->
+            <div id="config-tab" class="tab-content active">
+                <form id="config-form" class="admin-form">
+                    <div class="form-group">
+                        <label for="ad-reward">Ad Reward</label>
+                        <input type="number" id="ad-reward" class="input-field" step="0.01" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="daily-login-reward">Daily Login Reward</label>
+                        <input type="number" id="daily-login-reward" class="input-field" step="0.01" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="referral-bonus">Referral Bonus</label>
+                        <input type="number" id="referral-bonus" class="input-field" step="0.01" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="new-user-bonus">New User Bonus</label>
+                        <input type="number" id="new-user-bonus" class="input-field" step="0.01" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="min-withdraw">Minimum Withdrawal</label>
+                        <input type="number" id="min-withdraw" class="input-field" step="0.01" required>
+                    </div>
+                    <button type="submit" class="btn btn-primary">Save Config</button>
+                </form>
+            </div>
+
+            <!-- Tasks Admin Tab -->
+            <div id="tasks-admin-tab" class="tab-content">
+                <button id="add-task-btn" class="btn btn-primary">+ Add New Task</button>
+                <div id="admin-tasks-list" class="admin-tasks-list">
+                    <!-- Tasks will be loaded here -->
+                </div>
+            </div>
+
+            <!-- Withdrawals Tab -->
+            <div id="withdrawals-tab" class="tab-content">
+                <div id="pending-withdrawals" class="withdrawals-list">
+                    <!-- Pending withdrawals will be loaded here -->
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal for Task Creation -->
+    <div id="task-modal" class="modal">
+        <div class="modal-content">
+            <span class="modal-close">&times;</span>
+            <h2>Create New Task</h2>
+            <form id="task-form">
+                <div class="form-group">
+                    <label for="task-title">Title</label>
+                    <input type="text" id="task-title" class="input-field" required>
+                </div>
+                <div class="form-group">
+                    <label for="task-reward">Reward</label>
+                    <input type="number" id="task-reward" class="input-field" step="0.01" required>
+                </div>
+                <div class="form-group">
+                    <label for="task-link">Link</label>
+                    <input type="url" id="task-link" class="input-field" required>
+                </div>
+                <div class="form-group">
+                    <label for="task-type">Type</label>
+                    <select id="task-type" class="input-field" required>
+                        <option value="channel">Join Channel</option>
+                        <option value="post">View Post</option>
+                        <option value="external">External Link</option>
+                    </select>
+                </div>
+                <button type="submit" class="btn btn-primary">Create Task</button>
+            </form>
+        </div>
+    </div>
+
+    <script src="/script.js"></script>
+</body>
+</html>
