@@ -1,5 +1,4 @@
 // Cloudflare Pages Function: /api/auth/verify
-import crypto from 'crypto';
 
 export async function onRequestPost(context) {
     try {
@@ -33,11 +32,41 @@ export async function onRequestPost(context) {
             .map(([key, value]) => `${key}=${value}`)
             .join('\n');
         
-        // Create secret key
-        const secretKey = crypto.createHmac('sha256', 'WebAppData').update(BOT_TOKEN).digest();
+        // Create secret key using Web Crypto API
+        const encoder = new TextEncoder();
+        const key = await crypto.subtle.importKey(
+            'raw',
+            encoder.encode('WebAppData'),
+            { name: 'HMAC', hash: 'SHA-256' },
+            false,
+            ['sign']
+        );
+        
+        const secretKeyBuffer = await crypto.subtle.sign(
+            'HMAC',
+            key,
+            encoder.encode(BOT_TOKEN)
+        );
         
         // Calculate hash
-        const calculatedHash = crypto.createHmac('sha256', secretKey).update(dataCheckString).digest('hex');
+        const dataKey = await crypto.subtle.importKey(
+            'raw',
+            secretKeyBuffer,
+            { name: 'HMAC', hash: 'SHA-256' },
+            false,
+            ['sign']
+        );
+        
+        const hashBuffer = await crypto.subtle.sign(
+            'HMAC',
+            dataKey,
+            encoder.encode(dataCheckString)
+        );
+        
+        // Convert to hex
+        const calculatedHash = Array.from(new Uint8Array(hashBuffer))
+            .map(b => b.toString(16).padStart(2, '0'))
+            .join('');
         
         // Verify hash
         if (calculatedHash !== hash) {
@@ -81,4 +110,3 @@ export async function onRequestPost(context) {
         });
     }
 }
-  
